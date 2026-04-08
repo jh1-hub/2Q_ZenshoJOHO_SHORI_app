@@ -2646,7 +2646,13 @@ export default function App() {
                     if (selectedSubcategory?.id === 'all') {
                       startComprehensiveQuiz();
                     } else if (selectedSubcategory) {
-                      startQuiz(selectedSubcategory as any);
+                      // Check if it's a category (Unit) or subcategory (Sub-unit)
+                      const category = quizCategories.find(c => c.id === selectedSubcategory.id);
+                      if (category) {
+                        startQuiz(category);
+                      } else {
+                        startQuiz(selectedSubcategory as any);
+                      }
                     }
                   }}
                   className="w-full py-4 md:py-5 bg-theme-card border-2 border-theme-border-strong text-theme-text rounded-2xl text-lg md:text-xl font-bold flex items-center justify-center gap-3 hover:bg-theme-muted transition-colors"
