@@ -1,0 +1,7 @@
+{
+  "name": "2Q情報処理_ITQuizMaster2",
+  "description": "企業活動、コンピュータシステム、データ分析の広範な知識を5択クイズ形式で楽しく学べる学習アプリです。",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
