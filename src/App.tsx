@@ -368,6 +368,18 @@ export default function App() {
   const [targetCardId, setTargetCardId] = useState<string | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [resetStep, setResetStep] = useState(0);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
   const [hasBonusTicket, setHasBonusTicket] = useState(false);
   const [quizCount, setQuizCount] = useState(0);
   const [speedStarCorrectCount, setSpeedStarCorrectCount] = useState(0);
@@ -573,6 +585,13 @@ export default function App() {
     setUserProfile({ grade: profile.grade, classNum: profile.classNum, attendanceNum: profile.attendanceNum });
     localStorage.setItem('it_quiz_username', profile.userName);
     localStorage.setItem('it_quiz_user_profile', JSON.stringify({ grade: profile.grade, classNum: profile.classNum, attendanceNum: profile.attendanceNum }));
+    
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult: any) => {
+        setDeferredPrompt(null);
+      });
+    }
   };
 
   useEffect(() => {
@@ -3054,20 +3073,20 @@ export default function App() {
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="bg-theme-card w-full max-w-md rounded-[2.5rem] p-10 space-y-8 text-center shadow-2xl border border-theme-border"
+              className="bg-theme-card w-full max-w-md rounded-3xl md:rounded-[2.5rem] p-6 md:p-10 space-y-6 md:space-y-8 text-center shadow-2xl border border-theme-border"
             >
               <div className="space-y-4">
-                <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mx-auto mb-2">
-                  <AlertTriangle size={40} />
+                <div className="w-16 h-16 md:w-20 md:h-20 bg-red-50 text-red-500 rounded-2xl md:rounded-3xl flex items-center justify-center mx-auto mb-2">
+                  <AlertTriangle className="w-8 h-8 md:w-10 md:h-10" />
                 </div>
-                <h2 className="text-2xl font-bold">データの初期化</h2>
-                <p className="text-theme-text-muted text-sm">
+                <h2 className="text-xl md:text-2xl font-bold">データの初期化</h2>
+                <p className="text-theme-text-muted text-xs md:text-sm">
                   ユーザーデータ、カードコレクション、学習成績をすべて消去します。
                   この操作は取り消せません。
                 </p>
               </div>
 
-              <p className="text-center text-red-500 font-bold text-sm bg-red-50 py-2 rounded-lg">
+              <p className="text-center text-red-500 font-bold text-xs md:text-sm bg-red-50 py-2 rounded-lg">
                 {resetStep === 1 && "本当によろしいですか？"}
                 {resetStep === 2 && "もとに戻せませんよ？"}
                 {resetStep === 3 && "(もどせないったら！)"}
@@ -3079,13 +3098,13 @@ export default function App() {
                   <>
                     <button 
                       onClick={() => setResetStep(prev => prev + 1)}
-                      className="w-full py-4 bg-red-500 text-white rounded-2xl font-bold hover:bg-red-600 transition-colors"
+                      className="w-full py-3 md:py-4 bg-red-500 text-white rounded-xl md:rounded-2xl font-bold hover:bg-red-600 transition-colors"
                     >
                       次へ進む
                     </button>
                     <button 
                       onClick={() => setResetStep(0)}
-                      className="w-full py-4 bg-theme-border text-theme-text-muted rounded-2xl font-bold hover:bg-theme-border-strong transition-colors"
+                      className="w-full py-3 md:py-4 bg-theme-border text-theme-text-muted rounded-xl md:rounded-2xl font-bold hover:bg-theme-border-strong transition-colors"
                     >
                       キャンセル
                     </button>
@@ -3094,13 +3113,13 @@ export default function App() {
                   <>
                     <button 
                       onClick={resetAllStats}
-                      className="w-full py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-colors"
+                      className="w-full py-3 md:py-4 bg-red-600 text-white rounded-xl md:rounded-2xl font-bold hover:bg-red-700 transition-colors"
                     >
                       後悔しません
                     </button>
                     <button 
                       onClick={() => setResetStep(0)}
-                      className="w-full py-4 bg-theme-border text-theme-text-muted rounded-2xl font-bold hover:bg-theme-border-strong transition-colors"
+                      className="w-full py-3 md:py-4 bg-theme-border text-theme-text-muted rounded-xl md:rounded-2xl font-bold hover:bg-theme-border-strong transition-colors"
                     >
                       いいえ
                     </button>
@@ -3216,6 +3235,10 @@ export default function App() {
                     alert("すべての項目を入力してください。");
                     return;
                   }
+                  if (parseInt(classNum) < 1 || parseInt(attendanceNum) < 1) {
+                    alert("クラスと出席番号は1以上の数字を入力してください。");
+                    return;
+                  }
                   if (userNameInput.length > 12) {
                     alert("名前は12文字以内で入力してください。");
                     return;
@@ -3240,11 +3263,11 @@ export default function App() {
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-theme-text-muted ml-2 uppercase tracking-wider">クラス</label>
-                    <input name="classNum" type="number" placeholder="組" className="w-full px-4 py-3 bg-theme-muted border-2 border-theme-border rounded-xl focus:border-theme-accent outline-none font-bold transition-all" />
+                    <input name="classNum" type="number" min="1" placeholder="組" className="w-full px-4 py-3 bg-theme-muted border-2 border-theme-border rounded-xl focus:border-theme-accent outline-none font-bold transition-all" />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-theme-text-muted ml-2 uppercase tracking-wider">出席番号</label>
-                    <input name="attendanceNum" type="number" placeholder="番" className="w-full px-4 py-3 bg-theme-muted border-2 border-theme-border rounded-xl focus:border-theme-accent outline-none font-bold transition-all" />
+                    <input name="attendanceNum" type="number" min="1" placeholder="番" className="w-full px-4 py-3 bg-theme-muted border-2 border-theme-border rounded-xl focus:border-theme-accent outline-none font-bold transition-all" />
                   </div>
                 </div>
 
