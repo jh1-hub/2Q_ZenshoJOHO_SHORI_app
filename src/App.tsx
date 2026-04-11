@@ -666,6 +666,18 @@ export default function App() {
     setUserProfile(null);
     localStorage.removeItem('it_quiz_username');
     localStorage.removeItem('it_quiz_user_profile');
+    
+    setSpeedStarMaxCombo(0);
+    setSpeedStarMaxCorrect(0);
+    setSpeedStarChallenges(0);
+    localStorage.removeItem('it_quiz_speed_star_stats');
+    
+    setQuizCount(0);
+    localStorage.removeItem('it_quiz_count');
+    
+    setHasBonusTicket(false);
+    localStorage.removeItem('it_quiz_bonus_ticket');
+    
     setResetStep(0);
     setGameState('START');
   };
