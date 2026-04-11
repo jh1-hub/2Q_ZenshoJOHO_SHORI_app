@@ -1,0 +1,17 @@
+{
+  "name": "ITQuizMaster2",
+  "short_name": "ITQuiz2",
+  "description": "企業活動、コンピュータシステム、データ分析の広範な知識を5択クイズ形式で楽しく学べる学習アプリです。",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
