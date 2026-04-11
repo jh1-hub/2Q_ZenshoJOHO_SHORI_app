@@ -1759,8 +1759,8 @@ export default function App() {
             className="max-w-4xl mx-auto p-6 py-12 relative"
           >
             {/* Watermark */}
-            <div className="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center rotate-[-20deg]">
-              <span className="text-9xl font-bold text-theme-text select-none">CONFIDENTIAL</span>
+            <div className="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center overflow-hidden">
+              <span className="text-7xl md:text-9xl font-bold text-theme-text select-none -rotate-12 whitespace-nowrap">CONFIDENTIAL</span>
             </div>
 
             <div className="flex items-center justify-between mb-12">
@@ -1864,11 +1864,11 @@ export default function App() {
               {/* Category Breakdown */}
               {quizCategories.map(category => (
                 <section key={category.id} className="space-y-6">
-                  <div className="flex items-center justify-between border-b border-theme-border-strong pb-2">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-theme-border-strong pb-2">
                     <h3 className="text-xl font-bold text-theme-accent">
                       {category.title}
                     </h3>
-                    <div className="flex gap-6 text-sm">
+                    <div className="flex flex-wrap gap-3 md:gap-6 text-xs md:text-sm">
                       <span className="text-theme-text-muted">単元ハイスコア: <span className="text-black font-mono font-bold">{getStatsFor(category.id).highScore.toLocaleString()}</span></span>
                       <span className="text-theme-text-muted">演習回数: <span className="text-black font-mono font-bold">{getStatsFor(category.id).attempts}回</span></span>
                       <span className="text-theme-text-muted">平均スコア: <span className="text-black font-mono font-bold">
