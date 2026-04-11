@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/2Q_ZenshoJOHO_SHORI_app/sw.js', { scope: '/2Q_ZenshoJOHO_SHORI_app/' })})}
